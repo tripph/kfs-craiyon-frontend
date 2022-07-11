@@ -39,8 +39,9 @@ fun getUsername(): String {
 
 fun buildEntryDiv(entry: FeedEntry): HTMLElement {
     return document.create.div {
+        id = entry.ts!!
         h3 {
-            this.text("""${entry.prompt} - ${entry.username} at ${entry.ts}""")
+            this.text("\"${entry.prompt}\" - ${entry.username} at ${entry.ts}")
         }
         entry.images?.map { image ->
             img {

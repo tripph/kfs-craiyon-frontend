@@ -36,10 +36,8 @@ function buildEntryDiv(message) {
     const id = `${message.ts}`
     div.setAttribute("id", id)
     div.classList.add("feed-entry")
-    //document.getElementById("feed").prepend(div)
     const h3 = document.createElement("h3")
-    const likeCount = message.likes == null ? 0 : message.likes
-    h3.innerHTML = `"${message.prompt}" - ${message.username} at ${message.ts} - <span onclick="patchLike('${message.ts}')">&#128077; (${likeCount})</span>`
+    h3.innerHTML = `"${message.prompt}" - ${message.username} at ${message.ts}`
     div.appendChild(h3);
     message.images.forEach(imageString => {
         const img = document.createElement("img")
