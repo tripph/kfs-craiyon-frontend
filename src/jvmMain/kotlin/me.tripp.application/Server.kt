@@ -33,21 +33,12 @@ import java.util.*
 
 fun HTML.index() {
     head {
-        title("Hello from Ktor!")
+        title("Fullstack Kotlin Craiyon Frontend")
     }
     body {
-        div {
-            +"Hello from Ktor"
+        script(src = "/static/fullstack-dalle-frontend.js") {
+//            +"main();"
         }
-        div {
-            id = "root"
-        }
-        script(src = "/static/fullstack-dalle-frontend.js") {}
-//        script(src = "/static/main.js") {}
-
-//        div {
-//            id="feed"
-//        }
     }
 }
 suspend fun handle(req: FeedEntry) {
@@ -137,7 +128,7 @@ suspend fun handlePatch(frameText: String) {
 fun main() {
     restorePersistedState()
 
-    embeddedServer(Netty, port = 8080, host = "127.0.0.1") {
+    embeddedServer(Netty, port = 8088, host = "127.0.0.1") {
         install(WebSockets) {
             pingPeriod = Duration.ofSeconds(15)
             timeout = Duration.ofSeconds(15)
