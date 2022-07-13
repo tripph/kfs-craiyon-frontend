@@ -80,7 +80,7 @@ suspend fun subscribeToFeed(session: DefaultWebSocketServerSession) {
         .filter{!it.images.isNullOrEmpty()}
         .forEach{ feedEntry ->
             val response = Json.encodeToString(feedEntry)
-            logger.info("subscribeToFeed() sending feed entry from {}", feedEntry.ts)
+//            logger.info("subscribeToFeed() sending feed entry from {}", feedEntry.ts)
             session.outgoing.send(Frame.Text(response))
         }
     feedSessions.add(session)
