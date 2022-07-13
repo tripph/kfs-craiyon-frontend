@@ -42,6 +42,7 @@ fun HTML.index() {
     }
 }
 suspend fun handle(req: FeedEntry) {
+    req.ts = LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
     logger.info("handle: $req")
     val piece = Piece(req.prompt!!)
     val images = try { work(piece) } catch (e: Exception) {
@@ -68,7 +69,7 @@ fun restorePersistedState() {
         return
     }
     val state = Json.decodeFromString<List<FeedEntry>>(persistenceFile.readText())
-    state.filter{!it.images.isNullOrEmpty()}.forEach {
+    state.filter{!it.images.isNullOrEmpty() && it.ts != null}.forEach {
         feed.add(it)
     }
 }
