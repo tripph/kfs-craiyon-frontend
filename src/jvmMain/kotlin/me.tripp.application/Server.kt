@@ -17,6 +17,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.html.*
 import io.ktor.server.http.content.*
 import io.ktor.server.netty.Netty
+import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
@@ -90,7 +91,8 @@ suspend fun subscribeToFeed(session: DefaultWebSocketServerSession) {
     } catch (e: Exception) {
         e.printStackTrace()
     }finally {
-        logger.info("Closing session")
+        feedSessions.remove(session)
+        logger.info("Closing feed session")
     }
 }
 suspend fun subscribeToPatch(session: DefaultWebSocketSession) {
@@ -105,6 +107,9 @@ suspend fun subscribeToPatch(session: DefaultWebSocketSession) {
         }
     } catch (e: Exception) {
         e.printStackTrace()
+    } finally {
+        patchSessions.remove(session)
+        logger.info("Closing patch session")
     }
 }
 suspend fun handlePatch(frameText: String) {
@@ -129,7 +134,7 @@ suspend fun handlePatch(frameText: String) {
 fun main() {
     restorePersistedState()
 
-    embeddedServer(Netty, port = 8088, host = "127.0.0.1") {
+    embeddedServer(Netty, port = 8088, host = "0.0.0.0") {
         install(WebSockets) {
             pingPeriod = Duration.ofSeconds(15)
             timeout = Duration.ofSeconds(15)
@@ -160,6 +165,9 @@ fun main() {
             }
             get("/") {
                 call.respondHtml(HttpStatusCode.OK, HTML::index)
+            }
+            get("/static/index.html") {
+                call.respondRedirect("/",true)
             }
             static("/static") {
                 resources()

@@ -9,9 +9,10 @@ import org.w3c.dom.*
 import org.w3c.dom.events.Event
 import kotlin.js.json
 
-val promptSocket = WebSocket("ws://localhost:8088/prompt")
-val patchSocket = WebSocket("ws://localhost:8088/patch")
-
+val host = window.location.host
+val promptSocket = WebSocket("ws://$host/prompt")
+val feedSocket = WebSocket("ws://$host/feed")
+val patchSocket = WebSocket("ws://$host/patch")
 
 val username = getUsername()
 
@@ -77,11 +78,11 @@ fun buildEntryDiv(entry: FeedEntry): HTMLElement {
 fun getSubmitButton() = document.getElementById("submit-button")!!
 
 fun main() {
-    val feedSocket = WebSocket("ws://localhost:8088/feed")
+
 
     feedSocket.onmessage = {
         val messageStr = it.data as String
-        console.log(messageStr)
+//        console.log(messageStr)
         val r = kotlinx.serialization.json.Json.decodeFromString<FeedEntry>(messageStr)
         val newDiv = buildEntryDiv(r)
         document.getElementById("feed")!!.prepend(newDiv)
@@ -93,11 +94,8 @@ fun main() {
 
         val resp = kotlinx.serialization.json.Json.decodeFromString<PatchResp>(patchStr)
         val oldDiv = document.getElementsByClassName("feedEntry").asList().firstOrNull { it.id == resp.itemTs }
-        oldDiv?.replaceWith(
-            buildEntryDiv(resp.newValue)
-        )
+        oldDiv?.replaceWith(buildEntryDiv(resp.newValue))
 
-        console.log(patchStr)
     }
     document.body!!.append {
         form {
